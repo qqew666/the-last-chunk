@@ -1,0 +1,2 @@
+plugins { id 'fabric-loom' version '1.7.4' apply false }
+allprojects { group = 'dev.mirnaubyl'; version = '1.0.0'; repositories { mavenCentral() } }
