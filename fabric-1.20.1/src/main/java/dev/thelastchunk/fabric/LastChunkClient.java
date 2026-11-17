@@ -1,6 +1,6 @@
-package dev.mirnaubyl.fabric;
+package dev.thelastchunk.fabric;
 
-import dev.mirnaubyl.RoundClock;
+import dev.thelastchunk.RoundClock;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.*;
@@ -14,13 +14,13 @@ import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public final class MirClient implements ClientModInitializer {
+public final class LastChunkClient implements ClientModInitializer {
     private static int elapsed,round;
     private static boolean connected,water,food;
     private static String candidate="";
     @Override public void onInitializeClient() {
         ClientPlayConnectionEvents.DISCONNECT.register((handler,client)-> { connected=false; elapsed=0; candidate=""; });
-        ClientPlayNetworking.registerGlobalReceiver(MirNaUbyl.SYNC,(client,handler,buf,sender)-> {
+        ClientPlayNetworking.registerGlobalReceiver(TheLastChunk.SYNC,(client,handler,buf,sender)-> {
             int time=buf.readVarInt(),r=buf.readVarInt(); String id=buf.readString(); boolean w=buf.readBoolean(),f=buf.readBoolean();
             client.execute(()-> { connected=true; elapsed=time; water=w; food=f; candidate=id; round=r;
                 if(elapsed<RoundClock.INTERVAL && client.currentScreen instanceof ChoiceScreen) client.setScreen(null);
@@ -41,7 +41,7 @@ public final class MirClient implements ClientModInitializer {
         });
     }
     private static final class ChoiceScreen extends Screen {
-        ChoiceScreen() { super(Text.literal("Мир на убыль")); }
+        ChoiceScreen() { super(Text.literal("The Last Chunk")); }
         @Override protected void init() {
             int x=width/2-130,y=height/2-20;
             Text block=candidate.isEmpty()?Text.literal("Все блоки уже выбраны"):Text.literal("Блок: ").append(Registries.BLOCK.get(new Identifier(candidate)).getName());
@@ -50,7 +50,7 @@ public final class MirClient implements ClientModInitializer {
             addChoice(x,y+64,Text.literal(food?"Еда уже удалена":"Удалить всю еду"),2,!food);
         }
         private void addChoice(int x,int y,Text text,int option,boolean enabled) {
-            ButtonWidget button=ButtonWidget.builder(text,b->{ var packet=PacketByteBufs.create(); packet.writeVarInt(round); packet.writeVarInt(option); ClientPlayNetworking.send(MirNaUbyl.CHOOSE,packet); children().stream().filter(e->e instanceof ButtonWidget).forEach(e->((ButtonWidget)e).active=false); }).dimensions(x,y,260,24).build();
+            ButtonWidget button=ButtonWidget.builder(text,b->{ var packet=PacketByteBufs.create(); packet.writeVarInt(round); packet.writeVarInt(option); ClientPlayNetworking.send(TheLastChunk.CHOOSE,packet); children().stream().filter(e->e instanceof ButtonWidget).forEach(e->((ButtonWidget)e).active=false); }).dimensions(x,y,260,24).build();
             button.active=enabled; addDrawableChild(button);
         }
         @Override public void render(DrawContext draw,int mouseX,int mouseY,float delta) {

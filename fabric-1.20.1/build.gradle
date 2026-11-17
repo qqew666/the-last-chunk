@@ -1,5 +1,5 @@
 plugins { id 'fabric-loom' }
-base { archivesName = 'mir-na-ubyl-fabric-1.20.1' }
+base { archivesName = 'the-last-chunk-fabric-1.20.1' }
 dependencies {
  minecraft 'com.mojang:minecraft:1.20.1'
  mappings 'net.fabricmc:yarn:1.20.1+build.10:v2'

@@ -1,4 +1,4 @@
-package dev.mirnaubyl;
+package dev.thelastchunk;
 /** Server ticks, paused while waiting for a choice or while nobody is online. */
 public final class RoundClock {
     public static final int INTERVAL = 5 * 60 * 20;

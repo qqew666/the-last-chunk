@@ -1,6 +1,6 @@
-package dev.mirnaubyl.fabric.mixin;
+package dev.thelastchunk.fabric.mixin;
 
-import dev.mirnaubyl.fabric.MirNaUbyl;
+import dev.thelastchunk.fabric.TheLastChunk;
 import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public abstract class WorldChunkMixin {
     @Shadow public abstract World getWorld();
     @ModifyVariable(method="setBlockState", at=@At("HEAD"), argsOnly=true)
-    private BlockState mirnaubyl$filter(BlockState state) {
-        return getWorld() instanceof ServerWorld server ? MirNaUbyl.filter(server,state) : state;
+    private BlockState thelastchunk$filter(BlockState state) {
+        return getWorld() instanceof ServerWorld server ? TheLastChunk.filter(server,state) : state;
     }
 }

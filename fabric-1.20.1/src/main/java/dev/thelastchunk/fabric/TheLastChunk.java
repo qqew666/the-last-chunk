@@ -1,6 +1,6 @@
-package dev.mirnaubyl.fabric;
+package dev.thelastchunk.fabric;
 
-import dev.mirnaubyl.RoundClock;
+import dev.thelastchunk.RoundClock;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.*;
 import net.fabricmc.fabric.api.networking.v1.*;
@@ -25,32 +25,32 @@ import net.minecraft.world.chunk.WorldChunk;
 import java.util.*;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public final class MirNaUbyl implements ModInitializer {
+public final class TheLastChunk implements ModInitializer {
     public static final Identifier SYNC = new Identifier("mirnaubyl","sync"), CHOOSE = new Identifier("mirnaubyl","choose");
-    private static final Map<MinecraftServer, MirNaUbyl> RUNNING = new IdentityHashMap<>();
+    private static final Map<MinecraftServer, TheLastChunk> RUNNING = new IdentityHashMap<>();
     private WorldRules rules;
     private final Set<WorldChunk> loaded = Collections.newSetFromMap(new IdentityHashMap<>());
     private final ArrayDeque<Sweep> sweeps = new ArrayDeque<>();
     private int ticks;
     private static final String[] CANDIDATES = {"stone","dirt","grass_block","sand","gravel","oak_log","oak_leaves","deepslate","netherrack","end_stone","cobblestone","andesite","diorite","granite","coal_ore","iron_ore","copper_ore","gold_ore","redstone_ore","diamond_ore","clay","snow_block","ice","terracotta","basalt","blackstone","tuff","calcite","spruce_log","birch_log","oak_planks","glass","obsidian","sandstone","moss_block"};
     @Override public void onInitialize() {
-        ServerLifecycleEvents.SERVER_STARTED.register(s -> { MirNaUbyl game = RUNNING.computeIfAbsent(s, key -> new MirNaUbyl()); game.rules=WorldRules.get(s); });
+        ServerLifecycleEvents.SERVER_STARTED.register(s -> { TheLastChunk game = RUNNING.computeIfAbsent(s, key -> new TheLastChunk()); game.rules=WorldRules.get(s); });
         ServerLifecycleEvents.SERVER_STOPPED.register(s -> RUNNING.remove(s));
-        ServerChunkEvents.CHUNK_LOAD.register((w,c) -> { MirNaUbyl g=RUNNING.get(w.getServer()); if(g!=null) {g.loaded.add(c); g.sweeps.add(new Sweep(w,c));} });
-        ServerChunkEvents.CHUNK_UNLOAD.register((w,c) -> { MirNaUbyl g=RUNNING.get(w.getServer()); if(g!=null) g.loaded.remove(c); });
+        ServerChunkEvents.CHUNK_LOAD.register((w,c) -> { TheLastChunk g=RUNNING.get(w.getServer()); if(g!=null) {g.loaded.add(c); g.sweeps.add(new Sweep(w,c));} });
+        ServerChunkEvents.CHUNK_UNLOAD.register((w,c) -> { TheLastChunk g=RUNNING.get(w.getServer()); if(g!=null) g.loaded.remove(c); });
         // Initial spawn chunks can load before SERVER_STARTED.
-        ServerLifecycleEvents.SERVER_STARTING.register(s -> { MirNaUbyl game=new MirNaUbyl(); RUNNING.put(s,game); });
-        ServerTickEvents.END_SERVER_TICK.register(s -> { MirNaUbyl g=RUNNING.get(s); if(g!=null && g.rules!=null) g.tick(s); });
-        ServerPlayConnectionEvents.JOIN.register((h,sender,s) -> { MirNaUbyl g=RUNNING.get(s); if(g!=null) g.sync(h.player); });
+        ServerLifecycleEvents.SERVER_STARTING.register(s -> { TheLastChunk game=new TheLastChunk(); RUNNING.put(s,game); });
+        ServerTickEvents.END_SERVER_TICK.register(s -> { TheLastChunk g=RUNNING.get(s); if(g!=null && g.rules!=null) g.tick(s); });
+        ServerPlayConnectionEvents.JOIN.register((h,sender,s) -> { TheLastChunk g=RUNNING.get(s); if(g!=null) g.sync(h.player); });
         ServerPlayNetworking.registerGlobalReceiver(CHOOSE,(s,p,h,b,response) -> {
             int round=b.readVarInt(), option=b.readVarInt();
-            s.execute(() -> { MirNaUbyl g=RUNNING.get(s); if(g!=null && !p.isSpectator()) g.choose(s,round,option); });
+            s.execute(() -> { TheLastChunk g=RUNNING.get(s); if(g!=null && !p.isSpectator()) g.choose(s,round,option); });
         });
         CommandRegistrationCallback.EVENT.register((d,a,e) -> d.register(literal("worldchoice").requires(src -> src.hasPermissionLevel(2))
-            .then(literal("now").executes(ctx -> {MirNaUbyl g=RUNNING.get(ctx.getSource().getServer());g.rules.clock=new RoundClock(RoundClock.INTERVAL);g.rules.markDirty();g.syncAll(ctx.getSource().getServer());return 1;}))));
+            .then(literal("now").executes(ctx -> {TheLastChunk g=RUNNING.get(ctx.getSource().getServer());g.rules.clock=new RoundClock(RoundClock.INTERVAL);g.rules.markDirty();g.syncAll(ctx.getSource().getServer());return 1;}))));
     }
     public static BlockState filter(ServerWorld world, BlockState state) {
-        MirNaUbyl g=RUNNING.get(world.getServer());
+        TheLastChunk g=RUNNING.get(world.getServer());
         if(g==null || g.rules==null) return state;
         if(g.rules.blocks.contains(Registries.BLOCK.getId(state.getBlock()).toString())) return Blocks.AIR.getDefaultState();
         if(g.rules.food && (state.isOf(Blocks.CAKE) || state.isOf(Blocks.CARROTS) || state.isOf(Blocks.POTATOES) || state.isOf(Blocks.BEETROOTS) || state.isOf(Blocks.WHEAT) || state.isOf(Blocks.MELON) || state.isOf(Blocks.PUMPKIN) || state.isOf(Blocks.SWEET_BERRY_BUSH) || state.isOf(Blocks.COCOA))) return Blocks.AIR.getDefaultState();

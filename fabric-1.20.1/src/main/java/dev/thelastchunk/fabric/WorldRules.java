@@ -1,6 +1,6 @@
-package dev.mirnaubyl.fabric;
+package dev.thelastchunk.fabric;
 
-import dev.mirnaubyl.RoundClock;
+import dev.thelastchunk.RoundClock;
 import net.minecraft.nbt.*;
 import net.minecraft.world.PersistentState;
 import net.minecraft.server.MinecraftServer;

@@ -24,7 +24,7 @@
 
 1. Minecraft Java Edition **1.20.1**, Java **17 или новее**.
 2. Установи Fabric Loader **0.16.10 или новее** для 1.20.1.
-3. Положи Fabric API **0.92.2+1.20.1** и собранный `mir-na-ubyl-fabric-1.20.1-1.0.0.jar` в папку `mods`.
+3. Положи Fabric API **0.92.2+1.20.1** и собранный `the-last-chunk-fabric-1.20.1-1.0.0.jar` в папку `mods`.
 4. Для игры по сети установи мод и Fabric API **и на сервер, и на каждый клиент**.
 
 Архив проекта — исходники, его нельзя просто положить в `mods`. Нужен JAR из сборки.
@@ -46,7 +46,7 @@ chmod +x gradlew
 ./gradlew build
 ```
 
-Результат: `fabric-1.20.1/build/libs/mir-na-ubyl-fabric-1.20.1-1.0.0.jar`.
+Результат: `fabric-1.20.1/build/libs/the-last-chunk-fabric-1.20.1-1.0.0.jar`.
 Файл с `-sources` в имени — исходники, для установки нужен обычный JAR.
 
 Запуск среды разработки: `./gradlew :fabric-1.20.1:runClient`.
@@ -66,7 +66,7 @@ chmod +x gradlew
 
 ## GitHub
 
-В проект включена автоматическая сборка на push и ручной запуск в Actions → Build Fabric 1.20.1. После успешной сборки скачай артефакт `mir-na-ubyl-fabric-1.20.1`.
+В проект включена автоматическая сборка на push и ручной запуск в Actions → Build Fabric 1.20.1. После успешной сборки скачай артефакт `the-last-chunk-fabric-1.20.1`.
 
 Чтобы создать собственный новый публичный репозиторий из этой папки через GitHub CLI:
 
@@ -74,10 +74,14 @@ chmod +x gradlew
 gh auth login
 git init -b main
 git add .
-git commit -m "Add Mir na ubyl Fabric 1.20.1 mod"
-gh repo create mir-na-ubyl --public --source=. --remote=origin --push
+git commit -m "Add The Last Chunk Fabric 1.20.1 mod"
+gh repo create the-last-chunk --public --source=. --remote=origin --push
 ```
 
 ## Статус проверки
 
 Смотри `VALIDATION.md` — в нём указаны фактически выполненные проверки этой версии.
+
+## Совместимость при переименовании
+
+Название мода — **The Last Chunk**. Технический ID `mirnaubyl`, сетевые каналы и ключ данных мира сохранены для совместимости с предыдущей версией. При обновлении замени старый JAR новым: не оставляй оба файла в `mods`.

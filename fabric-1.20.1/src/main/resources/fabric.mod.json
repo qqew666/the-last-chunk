@@ -2,19 +2,19 @@
   "schemaVersion": 1,
   "id": "mirnaubyl",
   "version": "${version}",
-  "name": "Мир на убыль",
+  "name": "The Last Chunk",
   "description": "Каждые пять минут мир теряет выбранный ресурс.",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "dev.mirnaubyl.fabric.MirNaUbyl"
+      "dev.thelastchunk.fabric.TheLastChunk"
     ],
     "client": [
-      "dev.mirnaubyl.fabric.MirClient"
+      "dev.thelastchunk.fabric.LastChunkClient"
     ]
   },
   "mixins": [
-    "mirnaubyl.mixins.json"
+    "thelastchunk.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.16.10",
